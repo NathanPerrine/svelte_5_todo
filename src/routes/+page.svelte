@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+  let todos = $state([
+    {text: 'Todo 1', done: false},
+    {text: 'Todo 2', done: false},
+  ])
+
+</script>
+
+<div class="todos">
+  {#each todos as todo, i}
+    <div class="todo">
+      <input value={todo.text} type="text">
+      <input value={todo.done} type="checkbox">
+    </div>
+  {/each}
+</div>
