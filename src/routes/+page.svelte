@@ -130,7 +130,7 @@
     </div>
 
     <!-- in progress section container -->
-    <div class="m-4 bg-secondary border border-secondary card md:border-b md:border-l md:border-b-secondary md:border-l-secondary p-4 md:w-1/2 overflow-hidden flex flex-1">
+    <div class="m-4 bg-primary border border-accent card p-4 md:w-1/2 overflow-hidden flex flex-1">
       <h1 class="text-2xl text-center font-bold">In progress</h1>
 
       <!-- todo container -->
