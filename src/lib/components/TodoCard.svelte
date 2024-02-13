@@ -1,17 +1,27 @@
 <script lang="ts">
   import type { Todo } from "$lib/types/types"
-  import { getContext } from "svelte"
-  const { removeTodo } = getContext<any>('remove')
+  // import { getContext } from "svelte"
+  // const { removeTodo } = getContext<any>('remove')
+
+  import { createTodos } from '$lib/stores/todos.svelte';
+	const todos = createTodos();
 
   let { todo } = $props<{ todo: Todo}>()
   const todoStatus = ['Todo', 'In Progress', 'Completed']
 
   function save() {
-    let text = (document.getElementById(`text-${todo.id}`) as HTMLInputElement).value
-    let status = (document.getElementById(`select-${todo.id}`) as HTMLSelectElement).value
+    let editText = (document.getElementById(`text-${todo.id}`) as HTMLInputElement).value
+    let editStatus = (document.getElementById(`select-${todo.id}`) as HTMLSelectElement).value
+    let id = todo.id
 
-    todo.text = text
-    todo.status = status.toLowerCase()
+    // todo.text = text
+    // todo.status = status.toLowerCase()
+    todos.updateTodo({text: editText, status: editStatus.toLowerCase(), id: id})
+  }
+
+
+  function removeTodo(id: string) {
+    todos.removeTodo(id)
   }
 
 </script>
@@ -48,6 +58,7 @@
       <button onclick={save} class="btn btn-xs btn-primary">Save</button>
       <label for={`edit_modal_${todo.id}`} class="btn btn-xs btn-primary">Close</label>
       <button onclick={() => {removeTodo(todo.id)}} class="btn btn-xs btn-error">Delete</button>
+      <!-- <button onclick={() => {removeTodo(todo.id)}} class="btn btn-xs btn-error">Delete</button> -->
     </div>
   </div>
   <label class="modal-backdrop" for={`edit_modal_${todo.id}`}>Close</label>
