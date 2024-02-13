@@ -10,6 +10,13 @@
     let text = (document.getElementById(`text-${todo.id}`) as HTMLInputElement).value
     let status = (document.getElementById(`select-${todo.id}`) as HTMLSelectElement).value
 
+    if (status.toLowerCase() != todo.status) {
+      const modal = <HTMLInputElement>document.getElementById(`edit_modal_${todo.id}`)
+      if (modal) {
+        modal.checked = !modal.checked
+      }
+    }
+
     todo.text = text
     todo.status = status.toLowerCase()
   }
@@ -31,19 +38,19 @@
 <div class="modal" role="dialog">
   <div class="modal-box">
     <h3 class="text-lg font-bold">Edit</h3>
-      <textarea id={`text-${todo.id}`} class="textarea textarea-primary w-full">{todo.text}</textarea>
+    <textarea id={`text-${todo.id}`} class="textarea textarea-primary w-full">{todo.text}</textarea>
 
-      <!-- status -->
-      <label class="form-control w-full max-w-xs">
-        <div class="label">
-          <span class="label-text">Status:</span>
-        </div>
-        <select id={`select-${todo.id}`} class="select select-bordered">
-          {#each todoStatus as status}
-            <option selected={todo.status == status.toLowerCase()}>{status}</option>
-          {/each}
-        </select>
-      </label>
+    <!-- status -->
+    <label class="form-control w-full max-w-xs">
+      <div class="label">
+        <span class="label-text">Status:</span>
+      </div>
+      <select id={`select-${todo.id}`} class="select select-bordered">
+        {#each todoStatus as status}
+        <option selected={todo.status == status.toLowerCase()}>{status}</option>
+        {/each}
+      </select>
+    </label>
     <div class="card-actions justify-end mt-4">
       <button onclick={save} class="btn btn-xs btn-primary">Save</button>
       <label for={`edit_modal_${todo.id}`} class="btn btn-xs btn-primary">Close</label>
