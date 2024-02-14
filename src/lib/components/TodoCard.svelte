@@ -23,13 +23,11 @@
 
 </script>
 
-<div class="card my-2 w-11/12 bg-base-100 shadow-xl">
+<div class="card m-2 w-28 sm:w-11/12 bg-base-100 shadow-xl">
   <div class="card-body p-4">
-    <!-- <h2 class="card-title">Card title!</h2> -->
     <p class="line-clamp-1">{todo.text}</p>
     <div class="card-actions justify-end">
       <label for={`edit_modal_${todo.id}`} class="btn btn-xs btn-primary">Edit</label>
-      <!-- <button class="btn btn-xs btn-error">Delete</button> -->
     </div>
   </div>
 </div>

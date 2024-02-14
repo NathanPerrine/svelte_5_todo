@@ -9,9 +9,14 @@
 
   $effect(() => {
     const savedTodos = localStorage.getItem('todos')
-    // savedTodos && (todos = JSON.parse(savedTodos))
     if (savedTodos) {
       todos = JSON.parse(savedTodos)
+    } else {
+      todos = [
+        {text: 'Hello there', status: 'todo', id: "1"},
+        {text: 'General Kenobi', status: "in progress", id: "2"},
+        {text: 'Take pizza out of oven', status: 'completed', id: "3"}
+      ]
     }
   })
 
@@ -62,19 +67,20 @@
 <div class="card bg-base-200 w-[90%] md:w-11/12 md:max-w-7xl h-[90vh] max-h-[90vh] mx-auto mt-10 md:mt-20 border border-primary flex justify-center flex-col ">
 
   <!-- add todos -->
-  <div class="bg-primary
+  <div class="bg-secondary
   mx-auto mt-4 p-4
   min-h-36 w-5/6 max-w-xl
-  card border-b md:border-r border-b-secondary md:border-r-secondary overflow-hidden flex-row">
+  card overflow-hidden flex-row">
 
     <h1 class="text-secondary-content card-title text-center">What do you need to do?</h1>
     <textarea class="textarea textarea-accent w-full md:max-h-80 md:textarea-lg" onkeydown={addTodo} placeholder="Add todo"/>
 
   </div>
 
+  <div class="divider divider-accent"></div>
 
   <!-- todo board container -->
-  <div class="flex flex-1 overflow-hidden p-4">
+  <div class="flex flex-1 overflow-auto p-4 flex-col sm:flex-row">
     {#each boards as board}
       <Board todos={todos.filter((todo) => todo.status.toLowerCase() == board.filter)} title={board.title} />
     {/each}

@@ -25,18 +25,17 @@
 	});
 </script>
 
-<div class="m-4 p-4 pr-1 bg-primary border border-accent card md:w-1/2 overflow-hidden flex flex-1">
+<div class="m-2 p-4 pr-1 bg-primary border border-accent card md:w-1/2 sm:overflow-hidden flex flex-1 h-1/ sm:h-auto">
   <h1 class="text-2xl text-center font-bold">{title}</h1>
 
   <!-- todo container -->
   <div class="overflow-auto">
-    <!-- {#key todos} -->
-    {#each todos as todo (todo.id)}
+    <div class="flex flex-row sm:flex-col">
+      {#each todos as todo (todo.id)}
       <div in:receive={{ key: todo.id }} out:send={{ key: todo.id}} animate:flip>
         <TodoCard bind:todo={todo} />
       </div>
-    {/each}
-    <!-- {/key} -->
-
+      {/each}
+    </div>
   </div>
 </div>
