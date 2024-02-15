@@ -24,12 +24,9 @@
 	});
 
   let isDraggingOver = $state(false)
-  import { currentDraggedTodo } from '$lib/draggedTodo.svelte';
-  // let draggedTodo: Todo
-  // const draggedTodo = currentDraggedTodo()
+  import { draggedTodo } from '$lib/draggedTodo.svelte';
 
   function dragEnter(e: DragEvent) {
-    console.log(e)
     isDraggingOver = true;
   }
 
@@ -43,26 +40,16 @@
   function todoDragging(e: DragEvent) {
     const id = (e.target as HTMLElement).getAttribute('data-id');
     const todo = todos.find((todo) => todo.id === id);
-    console.log(todo)
     if (todo) {
-      // draggedTodo.currentDraggedTodo = todo;
-      // console.log(draggedTodo.currentDraggedTodo)
-      currentDraggedTodo.update(() => {return todo})
+      draggedTodo.draggedTodo = todo;
     }
   }
 
   function assignDrop(e: DragEvent) {
-    console.log(e.target)
-    console.log((e.target as HTMLElement).getAttribute('data-filter'))
-    console.log($currentDraggedTodo)
-    if ($currentDraggedTodo) {
-      handleDroppedTodo($currentDraggedTodo.id, filter)
+    if (draggedTodo.draggedTodo) {
+      handleDroppedTodo(draggedTodo.draggedTodo.id, filter)
       isDraggingOver = false
-      // console.log($currentDraggedTodo.id)
-      // const todo = todos.find((todo) => todo.id === $currentDraggedTodo.id)
-      // console.log(todo)
     }
-
   }
 
   function dragOver(e:DragEvent) {
@@ -85,7 +72,7 @@ class:[&_*]:pointer-events-none={isDraggingOver}
   <h1 class="text-2xl text-center font-bold">{title}</h1>
 
   <!-- todo container -->
-  <div class="overflow-auto">
+  <div class="overflow-auto h-full">
     <div class="flex flex-row sm:flex-col">
       {#each todos as todo (todo.id)}
       <div in:receive={{ key: todo.id }} out:send={{ key: todo.id}} animate:flip>

@@ -1,15 +1,12 @@
 import type { Todo } from "$lib/types/types"
 
-// export function currentDraggedTodo() {
-//   let currentDraggedTodo = $state<Todo>()
+export function currentDraggedTodo() {
+  let draggedTodo = $state<Todo>()
 
-//   return {
-//     get currentDraggedTodo() { return currentDraggedTodo },
-//     set currentDraggedTodo(newValue) { currentDraggedTodo = newValue }
-//   }
-// }
+  return {
+    get draggedTodo() { return draggedTodo },
+    set draggedTodo(newValue) { draggedTodo = newValue }
+  }
+}
 
-
-import { writable, type Writable } from 'svelte/store'
-
-export const currentDraggedTodo: Writable<Todo> = writable()
+export const draggedTodo = currentDraggedTodo()

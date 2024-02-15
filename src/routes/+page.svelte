@@ -65,8 +65,6 @@
   }
 
   function handleDroppedTodo(id: string, board: string) {
-    console.log(id)
-    console.log(board)
     const todo = todos.find((todo) => todo.id === id)
     if (todo) {
       todo.status = board
