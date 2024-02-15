@@ -1,12 +1,11 @@
 <script lang="ts">
   import type { Todo } from '$lib/types/types'
 	import TodoCard from './TodoCard.svelte';
-
-  let { todos, title } = $props<{ todos: Todo[], title: string}>()
-
   import { quintOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
+
+  let { todos, title, filter } = $props<{ todos: Todo[], title: string, filter: string}>()
 
 	const [send, receive] = crossfade({
 		fallback(node, params) {
@@ -23,9 +22,66 @@
 			};
 		}
 	});
+
+  let isDraggingOver = $state(false)
+  import { currentDraggedTodo } from '$lib/draggedTodo.svelte';
+  // let draggedTodo: Todo
+  // const draggedTodo = currentDraggedTodo()
+
+  function dragEnter(e: DragEvent) {
+    console.log(e)
+    isDraggingOver = true;
+  }
+
+  function dragLeave(e: DragEvent) {
+    isDraggingOver = false;
+  }
+
+  import { getContext } from "svelte"
+  const { handleDroppedTodo } = getContext<any>('drop')
+
+  function todoDragging(e: DragEvent) {
+    const id = (e.target as HTMLElement).getAttribute('data-id');
+    const todo = todos.find((todo) => todo.id === id);
+    console.log(todo)
+    if (todo) {
+      // draggedTodo.currentDraggedTodo = todo;
+      // console.log(draggedTodo.currentDraggedTodo)
+      currentDraggedTodo.update(() => {return todo})
+    }
+  }
+
+  function assignDrop(e: DragEvent) {
+    console.log(e.target)
+    console.log((e.target as HTMLElement).getAttribute('data-filter'))
+    console.log($currentDraggedTodo)
+    if ($currentDraggedTodo) {
+      handleDroppedTodo($currentDraggedTodo.id, filter)
+      isDraggingOver = false
+      // console.log($currentDraggedTodo.id)
+      // const todo = todos.find((todo) => todo.id === $currentDraggedTodo.id)
+      // console.log(todo)
+    }
+
+  }
+
+  function dragOver(e:DragEvent) {
+    e.preventDefault();
+  }
+
 </script>
 
-<div class="m-2 p-4 pr-1 bg-primary border border-accent card md:w-1/2 sm:overflow-hidden flex flex-1 h-1/ sm:h-auto">
+<div
+on:drop={assignDrop}
+on:dragenter={dragEnter}
+on:dragleave={dragLeave}
+on:dragover={dragOver}
+data-filter={filter}
+role="list"
+class="todoBoard m-2 p-4 pr-1 bg-primary border border-accent card md:w-1/2 sm:overflow-hidden flex flex-1 h-1/ sm:h-auto"
+class:ring={isDraggingOver}
+class:[&_*]:pointer-events-none={isDraggingOver}
+>
   <h1 class="text-2xl text-center font-bold">{title}</h1>
 
   <!-- todo container -->
@@ -33,9 +89,19 @@
     <div class="flex flex-row sm:flex-col">
       {#each todos as todo (todo.id)}
       <div in:receive={{ key: todo.id }} out:send={{ key: todo.id}} animate:flip>
-        <TodoCard bind:todo={todo} />
+        <TodoCard bind:todo={todo} on:drag={todoDragging} />
       </div>
       {/each}
     </div>
   </div>
 </div>
+
+<style>
+  .todoBoard:global(.droppable) {
+    outline: 0.1rem solid black;
+    outline-offset: 0.25rem;
+  }
+  .todoBoard:global(.droppable) * {
+    pointer-events: none;
+  }
+</style>

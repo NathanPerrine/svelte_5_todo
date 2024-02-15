@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Todo } from "$lib/types/types"
+
   import { getContext } from "svelte"
   const { removeTodo } = getContext<any>('remove')
 
@@ -23,7 +24,13 @@
 
 </script>
 
-<div class="card m-2 w-28 sm:w-11/12 bg-base-100 shadow-xl">
+<div
+  draggable="true"
+  on:drag
+  role="listitem"
+  class="card m-2 w-28 sm:w-11/12 bg-base-100 shadow-xl"
+  data-id={todo.id}
+>
   <div class="card-body p-4">
     <p class="line-clamp-1">{todo.text}</p>
     <div class="card-actions justify-end">

@@ -4,6 +4,7 @@
 
   import { setContext } from 'svelte';
   setContext('remove', { removeTodo })
+  setContext('drop', {handleDroppedTodo})
 
 	let todos = $state<Todo[]>([])
 
@@ -63,6 +64,15 @@
     todos.splice(index, 1)
   }
 
+  function handleDroppedTodo(id: string, board: string) {
+    console.log(id)
+    console.log(board)
+    const todo = todos.find((todo) => todo.id === id)
+    if (todo) {
+      todo.status = board
+    }
+  }
+
 </script>
 <div class="card bg-base-200 w-[90%] md:w-11/12 md:max-w-7xl h-[90vh] max-h-[90vh] mx-auto mt-10 md:mt-20 border border-primary flex justify-center flex-col ">
 
@@ -82,7 +92,7 @@
   <!-- todo board container -->
   <div class="flex flex-1 overflow-auto p-4 flex-col sm:flex-row">
     {#each boards as board}
-      <Board todos={todos.filter((todo) => todo.status.toLowerCase() == board.filter)} title={board.title} />
+      <Board todos={todos.filter((todo) => todo.status.toLowerCase() == board.filter)} title={board.title} filter={board.filter} />
     {/each}
   </div>
 
