@@ -24,7 +24,7 @@
 	});
 
   let isDraggingOver = $state(false)
-  import { draggedTodo } from '$lib/draggedTodo.svelte';
+  import { draggedTodo } from '$lib/stores/draggedTodo.svelte';
 
   function dragEnter(e: DragEvent) {
     isDraggingOver = true;
