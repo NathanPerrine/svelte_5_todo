@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { Todo } from '$lib/types/types'
 	import TodoCard from './TodoCard.svelte';
+  import { currentUser } from "$lib/stores/userStore.svelte";
   import { quintOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 
-  let { todos, title, filter } = $props<{ todos: Todo[], title: string, filter: string}>()
+  let { todos, title, filter } = $props<{ todos: Todo[], title: string, filter: string }>()
 
 	const [send, receive] = crossfade({
 		fallback(node, params) {
@@ -34,9 +35,6 @@
     isDraggingOver = false;
   }
 
-  import { getContext } from "svelte"
-  const { handleDroppedTodo } = getContext<any>('drop')
-
   function todoDragging(e: DragEvent) {
     const id = (e.target as HTMLElement).getAttribute('data-id');
     const todo = todos.find((todo) => todo.id === id);
@@ -47,7 +45,7 @@
 
   function assignDrop(e: DragEvent) {
     if (draggedTodo.draggedTodo) {
-      handleDroppedTodo(draggedTodo.draggedTodo.id, filter)
+      currentUser.todoHandlers.handleDroppedTodo(draggedTodo.draggedTodo, filter)
       isDraggingOver = false
     }
   }
@@ -74,11 +72,13 @@ class:[&_*]:pointer-events-none={isDraggingOver}
   <!-- todo container -->
   <div class="overflow-auto h-full">
     <div class="flex flex-row sm:flex-col">
-      {#each todos as todo (todo.id)}
-      <div in:receive={{ key: todo.id }} out:send={{ key: todo.id}} animate:flip>
-        <TodoCard bind:todo={todo} on:drag={todoDragging} />
-      </div>
-      {/each}
+      {#if todos}
+        {#each todos as todo (todo.id)}
+        <div in:receive={{ key: todo.id }} out:send={{ key: todo.id}} animate:flip>
+          <TodoCard bind:todo={todo} on:drag={todoDragging} />
+        </div>
+        {/each}
+      {/if}
     </div>
   </div>
 </div>

@@ -1,25 +1,28 @@
 <script lang="ts">
+	import { currentUser } from "$lib/stores/userStore.svelte";
   import type { Todo } from "$lib/types/types"
-
-  import { getContext } from "svelte"
-  const { removeTodo } = getContext<any>('remove')
 
   let { todo } = $props<{ todo: Todo}>()
   const todoStatus = ['Todo', 'In Progress', 'Completed']
 
   function save() {
+
     let text = (document.getElementById(`text-${todo.id}`) as HTMLInputElement).value
     let status = (document.getElementById(`select-${todo.id}`) as HTMLSelectElement).value
 
-    if (status.toLowerCase() != todo.status) {
+    if (todo.text != text || todo.status != status.toLowerCase()) {
+      currentUser.todoHandlers.editTodo(text, status, todo.id)
+
       const modal = <HTMLInputElement>document.getElementById(`edit_modal_${todo.id}`)
       if (modal) {
         modal.checked = !modal.checked
       }
-    }
 
-    todo.text = text
-    todo.status = status.toLowerCase()
+    }
+  }
+
+  function removeTodo() {
+    currentUser.todoHandlers.removeTodo(todo)
   }
 
 </script>
@@ -59,7 +62,7 @@
     <div class="card-actions justify-end mt-4">
       <button onclick={save} class="btn btn-xs btn-primary">Save</button>
       <label for={`edit_modal_${todo.id}`} class="btn btn-xs btn-primary">Close</label>
-      <button onclick={() => {removeTodo(todo.id)}} class="btn btn-xs btn-error">Delete</button>
+      <button onclick={removeTodo} class="btn btn-xs btn-error">Delete</button>
     </div>
   </div>
   <label class="modal-backdrop" for={`edit_modal_${todo.id}`}>Close</label>

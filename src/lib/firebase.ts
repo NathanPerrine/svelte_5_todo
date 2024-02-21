@@ -24,7 +24,6 @@ if (!getApps().length) {
   app = initializeApp(firebaseConfig)
 }
 
-// export const app = initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 export const storage = getStorage();

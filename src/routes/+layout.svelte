@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { LayoutData } from './$types';
   import "../app.css"
-	import AuthButton from '$lib/components/AuthButton.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 
   export let data: LayoutData;
 </script>
 
-<AuthButton />
+<Navbar />
 <slot />

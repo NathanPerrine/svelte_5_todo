@@ -1,28 +1,22 @@
 <script lang="ts">
 	import Board from "$lib/components/Board.svelte";
   import type { Todo } from "$lib/types/types"
+  import { currentUser } from "$lib/stores/userStore.svelte";
 
-  import { setContext } from 'svelte';
-  setContext('remove', { removeTodo })
-  setContext('drop', {handleDroppedTodo})
-
+  import { db } from "$lib/firebase";
+  import { doc, onSnapshot } from "firebase/firestore"
 	let todos = $state<Todo[]>([])
 
   $effect(() => {
-    const savedTodos = localStorage.getItem('todos')
-    if (savedTodos) {
-      todos = JSON.parse(savedTodos)
-    } else {
-      todos = [
-        {text: 'Hello there', status: 'todo', id: "1"},
-        {text: 'General Kenobi', status: "in progress", id: "2"},
-        {text: 'Take pizza out of oven', status: 'completed', id: "3"}
-      ]
+    if (currentUser.isLoggedIn === false) {
+      todos = []
     }
-  })
-
-  $effect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos))
+    if (currentUser.currentUser){
+      const docRef = doc(db, `users/${currentUser.currentUser.uid}`)
+      onSnapshot(docRef, (snapshot) => {
+        todos = (snapshot.data()?.todos ) ?? []
+      })
+    }
   })
 
   let boards = [
@@ -40,39 +34,28 @@
     },
   ]
 
-  function addTodo(event: KeyboardEvent) {
+  async function addTodo(event: KeyboardEvent) {
     if (event.key != 'Enter') return
 
-    const todoEl = event.target as HTMLInputElement
-    const id = window.crypto.randomUUID()
-    const text = todoEl.value.trim()
-    const done = false
-    const status = 'todo'
+    let todoEl = event.target as HTMLInputElement
+    let text = todoEl.value.trim();
+    let id = window.crypto.randomUUID();
+    let status = 'todo';
 
     if (text === '') {
       todoEl.value = ''
       return
     }
-    todos = [...todos, { text, status, id}]
-    todoEl.value = ''
-  }
 
-  function removeTodo(id: string) {
-    let index = todos.findIndex((todo) => {
-      return todo.id === id;
-    })
-    todos.splice(index, 1)
-  }
+    currentUser.todoHandlers.addTodo(text, status, id, clearText)
 
-  function handleDroppedTodo(id: string, board: string) {
-    const todo = todos.find((todo) => todo.id === id)
-    if (todo) {
-      todo.status = board
+    function clearText() {
+      (event.target as HTMLInputElement).value = ''
     }
   }
 
 </script>
-<div class="card bg-base-200 w-[90%] md:w-11/12 md:max-w-7xl h-[90vh] max-h-[90vh] mx-auto mt-10 md:mt-20 border border-primary flex justify-center flex-col ">
+<div class="card z-[1] bg-base-200 w-[90%] md:w-11/12 md:max-w-7xl h-[90vh] max-h-[90vh] mx-auto mt-3 md:mt-10 border border-primary flex justify-center flex-col ">
 
   <!-- add todos -->
   <div class="bg-secondary
@@ -81,8 +64,9 @@
   card overflow-hidden flex-row">
 
     <h1 class="text-secondary-content card-title text-center">What do you need to do?</h1>
-    <textarea class="textarea textarea-accent w-full md:max-h-80 md:textarea-lg" onkeydown={addTodo} placeholder="Add todo"/>
-
+    <textarea class="textarea textarea-accent w-full md:max-h-80 md:textarea-lg" onkeydown={addTodo}
+    disabled={!currentUser.isLoggedIn}
+    placeholder={currentUser.isLoggedIn ? 'Add todo' : 'Please log in to continue'}/>
   </div>
 
   <div class="divider divider-accent"></div>
