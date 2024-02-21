@@ -6,12 +6,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APIKEY,
-  authDomain: import.meta.env.VITE_AUTHDOMAIN,
-  projectId: import.meta.env.VITE_PROJECTID,
-  storageBucket: import.meta.env.VITE_STORAGEBUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
-  appId: import.meta.env.VITE_APPID
+  apiKey: "AIzaSyBIz2Z9wIj8DGhrglObbUnqjVVINq0xqjQ",
+  authDomain: "svelte-5-todos.firebaseapp.com",
+  projectId: "svelte-5-todos",
+  storageBucket: "svelte-5-todos.appspot.com",
+  messagingSenderId: "352995895155",
+  appId: "1:352995895155:web:0260cd5ac1a7953e36c706"
 };
 
 // Initialize Firebase
